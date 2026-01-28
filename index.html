@@ -3,196 +3,564 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>半導体アドベンチャー ⚡</title>
+<title>半導体完全ガイド ⚡ Semiconductor Complete Guide</title>
 <style>
+/* ============================================
+   BASE & RESET
+   ============================================ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
-  background: linear-gradient(135deg, #fce4ec, #e3f2fd, #e8f5e9, #fff9c4);
-  background-size: 400% 400%;
-  animation: bgShift 20s ease infinite;
-  color: #333;
-  line-height: 1.8;
-  font-size: 18px;
+  font-family: 'Hiragino Sans', 'Meiryo', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  color: #e0e0e0;
+  line-height: 1.9;
+  font-size: 17px;
+  overflow-x: hidden;
 }
 
-@keyframes bgShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* ============================================
+   BACKGROUND PARTICLES
+   ============================================ */
+.bg-particles {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.bg-particles .p {
+  position: absolute;
+  width: 3px; height: 3px;
+  background: rgba(100, 200, 255, 0.4);
+  border-radius: 50%;
+  animation: particleDrift 15s linear infinite;
+}
+@keyframes particleDrift {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-10vh) translateX(50px); opacity: 0; }
+}
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+.container {
+  position: relative; z-index: 1;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 header {
   text-align: center;
-  padding: 60px 20px 30px;
+  padding: 70px 20px 30px;
 }
-
 header h1 {
-  font-size: 2.5em;
-  background: linear-gradient(90deg, #e91e63, #9c27b0, #2196f3);
+  font-size: 2.6em;
+  background: linear-gradient(90deg, #64ffda, #536dfe, #e040fb);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
+}
+header .subtitle {
+  font-size: 1.1em;
+  color: #90a4ae;
+  margin-top: 8px;
 }
 
-header p { font-size: 1.2em; margin-top: 10px; color: #666; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* ============================================
+   TABLE OF CONTENTS
+   ============================================ */
+.toc {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 25px 30px;
+  margin: 20px 0 40px;
 }
+.toc h3 { color: #64ffda; margin-bottom: 12px; font-size: 1.1em; }
+.toc ol { padding-left: 20px; }
+.toc li { margin: 6px 0; }
+.toc a { color: #90caf9; text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: #64ffda; }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-}
-
-@keyframes rocketLaunch {
-  0% { transform: translateY(0); opacity: 1; }
-  80% { transform: translateY(-300px); opacity: 1; }
-  100% { transform: translateY(-400px); opacity: 0; }
-}
-
+/* ============================================
+   SECTION CARDS
+   ============================================ */
 .section {
-  max-width: 700px;
-  margin: 30px auto;
-  padding: 30px;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  padding: 35px 30px;
+  margin: 30px 0;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s;
 }
+.section:hover { border-color: rgba(100,255,218,0.2); }
 
 .section h2 {
-  font-size: 1.6em;
-  margin-bottom: 15px;
-  color: #5c6bc0;
+  font-size: 1.5em;
+  margin-bottom: 8px;
+  color: #64ffda;
+  display: flex; align-items: center; gap: 10px;
 }
-
-.section .emoji-icon {
-  font-size: 3em;
-  display: block;
-  text-align: center;
-  margin: 10px 0;
+.section h2 .num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #536dfe, #e040fb);
+  color: #fff; font-size: 0.7em; flex-shrink: 0;
 }
+.section h3 {
+  font-size: 1.15em; color: #b39ddb; margin: 22px 0 8px;
+  border-left: 3px solid #7c4dff; padding-left: 12px;
+}
+.section p { margin: 10px 0; color: #cfd8dc; }
+.section strong { color: #fff; }
 
-/* --- Section 1: 電気アニメーション --- */
-.electron-track {
+/* ============================================
+   DIAGRAM BOXES (図鑑スタイル)
+   ============================================ */
+.diagram {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(100,255,218,0.15);
+  border-radius: 14px;
+  padding: 25px;
+  margin: 18px 0;
   position: relative;
-  height: 60px;
-  background: #e0e0e0;
-  border-radius: 30px;
-  margin: 20px 0;
   overflow: hidden;
 }
+.diagram::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #64ffda, #536dfe, #e040fb);
+}
+.diagram .label {
+  font-size: 0.75em;
+  color: #64ffda;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
 
-.electron {
-  position: absolute;
-  width: 16px; height: 16px;
-  background: #ffeb3b;
+/* ============================================
+   SILICON CRYSTAL DIAGRAM
+   ============================================ */
+.crystal-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 50px);
+  grid-template-rows: repeat(3, 50px);
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+.atom {
+  width: 50px; height: 50px;
   border-radius: 50%;
-  top: 22px;
-  box-shadow: 0 0 10px #ffeb3b;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; font-size: 0.75em;
+  position: relative;
+}
+.atom.si {
+  background: radial-gradient(circle at 35% 35%, #5c6bc0, #283593);
+  color: #c5cae9;
+  border: 2px solid #7986cb;
+}
+.atom.si::after {
+  content: '';
+  position: absolute;
+  width: 62px; height: 62px;
+  border: 1px dashed rgba(121,134,203,0.4);
+  border-radius: 50%;
+}
+.bond-h, .bond-v {
+  position: absolute;
+  background: rgba(121,134,203,0.3);
 }
 
-.electron.on { animation: electronFlow 1.5s linear infinite; }
-.electron.off { animation: none; }
-
-.electron:nth-child(1) { animation-delay: 0s; }
-.electron:nth-child(2) { animation-delay: 0.5s; }
-.electron:nth-child(3) { animation-delay: 1s; }
-
-@keyframes electronFlow {
-  0% { left: -20px; }
-  100% { left: 100%; }
-}
-
-.toggle-btn {
-  display: inline-block;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 30px;
-  font-size: 1em;
-  cursor: pointer;
-  background: #5c6bc0;
-  color: #fff;
-  transition: background 0.3s;
-}
-.toggle-btn:hover { background: #3949ab; }
-
-/* --- Section 2: 脳アニメ --- */
-.brain { font-size: 4em; display: inline-block; animation: bounce 2s ease-in-out infinite; }
-
-/* --- Section 3: デバイスリスト --- */
-.device-list {
+/* electron count visualization */
+.valence-demo {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 30px;
+  margin: 15px 0;
   flex-wrap: wrap;
-  margin: 20px 0;
 }
-.device-item {
-  text-align: center;
-  font-size: 1em;
+.valence-atom {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; font-size: 1em; color: #fff;
 }
-.device-item .icon { font-size: 3em; display: block; animation: float 3s ease-in-out infinite; }
+.valence-atom.silicon-atom {
+  background: radial-gradient(circle at 35% 35%, #5c6bc0, #1a237e);
+  border: 2px solid #7986cb;
+}
+.valence-dot {
+  position: absolute;
+  width: 12px; height: 12px;
+  background: #ffeb3b;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ffeb3b;
+}
+.valence-dot:nth-child(2) { top: -6px; left: 50%; transform: translateX(-50%); }
+.valence-dot:nth-child(3) { bottom: -6px; left: 50%; transform: translateX(-50%); }
+.valence-dot:nth-child(4) { left: -6px; top: 50%; transform: translateY(-50%); }
+.valence-dot:nth-child(5) { right: -6px; top: 50%; transform: translateY(-50%); }
 
-/* --- Section 4: 蛇口 --- */
-.faucet-area {
+/* ============================================
+   DOPING ANIMATION
+   ============================================ */
+.doping-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+.doping-box {
+  text-align: center;
+  padding: 20px;
+  border-radius: 12px;
+  width: 200px;
+}
+.doping-box.n-type { background: rgba(33,150,243,0.15); border: 1px solid rgba(33,150,243,0.3); }
+.doping-box.p-type { background: rgba(233,30,99,0.15); border: 1px solid rgba(233,30,99,0.3); }
+.doping-box .title { font-weight: bold; font-size: 1.1em; margin-bottom: 8px; }
+.doping-box.n-type .title { color: #64b5f6; }
+.doping-box.p-type .title { color: #f48fb1; }
+.doping-visual {
+  position: relative;
+  width: 120px; height: 120px;
+  margin: 10px auto;
+}
+.doping-center {
+  position: absolute;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; font-size: 0.8em; color: #fff;
+}
+.n-type .doping-center { background: radial-gradient(circle, #43a047, #1b5e20); }
+.p-type .doping-center { background: radial-gradient(circle, #e91e63, #880e4f); }
+
+.orbit-electron {
+  position: absolute;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+}
+.orbit-electron.e { background: #ffeb3b; box-shadow: 0 0 6px #ffeb3b; }
+.orbit-electron.hole {
+  background: transparent;
+  border: 2px dashed #f48fb1;
+  width: 14px; height: 14px;
+}
+
+/* n-type: 5 electrons orbiting */
+.n-type .orbit-electron:nth-child(2) { animation: orbit 3s linear infinite; animation-delay: 0s; }
+.n-type .orbit-electron:nth-child(3) { animation: orbit 3s linear infinite; animation-delay: 0.6s; }
+.n-type .orbit-electron:nth-child(4) { animation: orbit 3s linear infinite; animation-delay: 1.2s; }
+.n-type .orbit-electron:nth-child(5) { animation: orbit 3s linear infinite; animation-delay: 1.8s; }
+.n-type .orbit-electron:nth-child(6) { animation: orbit 3s linear infinite; animation-delay: 2.4s; }
+/* the 5th "free" electron has a wider orbit */
+.n-type .orbit-electron.free { animation: orbitWide 2.5s linear infinite; }
+
+/* p-type: 3 electrons + 1 hole orbiting */
+.p-type .orbit-electron:nth-child(2) { animation: orbit 3s linear infinite; animation-delay: 0s; }
+.p-type .orbit-electron:nth-child(3) { animation: orbit 3s linear infinite; animation-delay: 1s; }
+.p-type .orbit-electron:nth-child(4) { animation: orbit 3s linear infinite; animation-delay: 2s; }
+.p-type .orbit-electron:nth-child(5) { animation: orbitHole 3s linear infinite; animation-delay: 0.5s; }
+
+@keyframes orbit {
+  0% { transform: translate(-50%, -50%) rotate(0deg) translateX(42px) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) translateX(42px) rotate(-360deg); }
+}
+@keyframes orbitWide {
+  0% { transform: translate(-50%, -50%) rotate(0deg) translateX(55px) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg) translateX(55px) rotate(-360deg); }
+}
+@keyframes orbitHole {
+  0% { transform: translate(-50%, -50%) rotate(90deg) translateX(42px) rotate(-90deg); }
+  100% { transform: translate(-50%, -50%) rotate(450deg) translateX(42px) rotate(-450deg); }
+}
+
+/* ============================================
+   TRANSISTOR DIAGRAM
+   ============================================ */
+.transistor-svg-wrap {
+  text-align: center;
+  margin: 15px 0;
+}
+.transistor-svg-wrap svg { max-width: 100%; }
+
+.transistor-interactive {
   text-align: center;
   margin: 20px 0;
-  cursor: pointer;
-  user-select: none;
+  padding: 20px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 14px;
 }
-.faucet-icon { font-size: 4em; transition: transform 0.3s; }
-.water-drops {
-  font-size: 2em;
+.transistor-interactive .gate-btn {
+  padding: 12px 30px;
+  border: 2px solid #7c4dff;
+  border-radius: 30px;
+  background: transparent;
+  color: #b388ff;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin: 10px;
+}
+.transistor-interactive .gate-btn:hover { background: #7c4dff; color: #fff; }
+.transistor-interactive .gate-btn.active { background: #7c4dff; color: #fff; }
+.transistor-status {
+  margin-top: 12px;
+  font-size: 1.2em;
+  min-height: 1.5em;
+}
+
+/* current flow in transistor */
+.current-path {
+  position: relative;
   height: 60px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 30px;
+  margin: 15px auto;
+  max-width: 400px;
   overflow: hidden;
 }
-.water-drops.flowing { animation: blink 0.5s infinite; }
-.water-drops.stopped { opacity: 0.2; }
-
-/* --- Section 5: ロケット --- */
-.rocket-area { text-align: center; min-height: 120px; position: relative; }
-.rocket {
-  font-size: 4em;
-  display: inline-block;
-  cursor: pointer;
+.current-dot {
+  position: absolute;
+  width: 10px; height: 10px;
+  background: #64ffda;
+  border-radius: 50%;
+  top: 25px;
+  box-shadow: 0 0 8px #64ffda;
+  opacity: 0;
 }
+.current-dot.flowing {
+  animation: currentFlow 1.2s linear infinite;
+}
+.current-dot:nth-child(1) { animation-delay: 0s; }
+.current-dot:nth-child(2) { animation-delay: 0.3s; }
+.current-dot:nth-child(3) { animation-delay: 0.6s; }
+.current-dot:nth-child(4) { animation-delay: 0.9s; }
+
+@keyframes currentFlow {
+  0% { left: -10px; opacity: 1; }
+  100% { left: 100%; opacity: 1; }
+}
+
+/* ============================================
+   APPLICATION SECTION
+   ============================================ */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  margin: 18px 0;
+}
+.app-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.app-card:hover { transform: translateY(-4px); border-color: rgba(100,255,218,0.3); }
+.app-card .icon { font-size: 2.5em; display: block; margin-bottom: 8px; }
+.app-card .name { font-size: 0.9em; color: #b0bec5; }
+
+/* ============================================
+   FUTURE / ROCKET
+   ============================================ */
+.rocket-area {
+  text-align: center;
+  min-height: 100px;
+  position: relative;
+}
+.rocket { font-size: 3.5em; display: inline-block; cursor: pointer; }
 .rocket.launch { animation: rocketLaunch 2s forwards; }
-
-/* --- クイズ --- */
-.quiz {
-  margin-top: 20px;
-  padding: 20px;
-  background: #f3e5f5;
-  border-radius: 15px;
+@keyframes rocketLaunch {
+  0% { transform: translateY(0); opacity: 1; }
+  80% { transform: translateY(-250px); opacity: 1; }
+  100% { transform: translateY(-350px); opacity: 0; }
 }
-.quiz p { font-weight: bold; margin-bottom: 10px; }
-.quiz button {
+
+/* ============================================
+   ELECTRON MAZE GAME
+   ============================================ */
+.maze-section {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(100,255,218,0.15);
+  border-radius: 20px;
+  padding: 35px 30px;
+  margin: 40px 0;
+}
+.maze-section h2 { color: #64ffda; font-size: 1.5em; margin-bottom: 10px; }
+
+.maze-container {
+  position: relative;
+  margin: 15px auto;
+  touch-action: none;
+}
+#mazeCanvas {
   display: block;
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border: 2px solid #ce93d8;
-  border-radius: 12px;
-  background: #fff;
+  margin: 0 auto;
+  border-radius: 10px;
+  border: 2px solid rgba(100,255,218,0.2);
+  background: #0a0a1a;
+  max-width: 100%;
+}
+.maze-controls {
+  text-align: center;
+  margin-top: 15px;
+}
+.maze-controls button {
+  padding: 10px 24px;
+  border: 2px solid #64ffda;
+  border-radius: 30px;
+  background: transparent;
+  color: #64ffda;
   font-size: 1em;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s;
+  margin: 5px;
 }
-.quiz button:hover { background: #f3e5f5; }
-.quiz button.correct { background: #c8e6c9; border-color: #66bb6a; }
-.quiz button.wrong { background: #ffcdd2; border-color: #ef5350; }
-.quiz .result { margin-top: 10px; font-size: 1.1em; min-height: 1.5em; }
+.maze-controls button:hover { background: #64ffda; color: #0f0c29; }
 
-/* --- 祝いエフェクト --- */
+.maze-dpad {
+  display: grid;
+  grid-template-columns: 50px 50px 50px;
+  grid-template-rows: 50px 50px 50px;
+  gap: 4px;
+  justify-content: center;
+  margin: 12px auto;
+}
+.maze-dpad button {
+  width: 50px; height: 50px;
+  border-radius: 10px;
+  border: 1px solid rgba(100,255,218,0.3);
+  background: rgba(100,255,218,0.1);
+  color: #64ffda;
+  font-size: 1.3em;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.maze-dpad button:hover { background: rgba(100,255,218,0.25); }
+.maze-dpad .empty { visibility: hidden; border: none; background: none; }
+
+.maze-msg {
+  text-align: center;
+  font-size: 1.1em;
+  min-height: 1.6em;
+  margin-top: 10px;
+  color: #b0bec5;
+}
+
+/* ============================================
+   QUIZ (テック風)
+   ============================================ */
+.quiz-section {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(224,64,251,0.15);
+  border-radius: 20px;
+  padding: 35px 30px;
+  margin: 40px 0;
+}
+.quiz-section h2 { color: #e040fb; font-size: 1.5em; margin-bottom: 10px; }
+
+.quiz-card {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 22px;
+  margin: 18px 0;
+}
+.quiz-card .q-num {
+  font-size: 0.8em;
+  color: #e040fb;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.quiz-card .q-text { font-weight: bold; color: #fff; margin-bottom: 14px; font-size: 1.05em; }
+.quiz-card button {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  margin: 7px 0;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  color: #cfd8dc;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.quiz-card button:hover { background: rgba(255,255,255,0.1); border-color: rgba(224,64,251,0.3); }
+.quiz-card button.correct {
+  background: rgba(76,175,80,0.25);
+  border-color: #4caf50;
+  color: #a5d6a7;
+}
+.quiz-card button.wrong {
+  background: rgba(244,67,54,0.2);
+  border-color: #f44336;
+  color: #ef9a9a;
+}
+.quiz-card button.reveal-correct {
+  border-color: #4caf50;
+  color: #a5d6a7;
+}
+.quiz-card .explanation {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  font-size: 0.9em;
+  color: #90a4ae;
+  display: none;
+}
+.quiz-card .explanation.show { display: block; }
+
+/* ============================================
+   SCORE
+   ============================================ */
+.score-section {
+  max-width: 820px;
+  margin: 30px auto;
+  padding: 35px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(100,255,218,0.15);
+  border-radius: 20px;
+  text-align: center;
+  display: none;
+}
+.score-section h2 { color: #64ffda; font-size: 1.8em; }
+.score-num { font-size: 3em; margin: 15px 0; color: #fff; }
+.score-bar {
+  height: 12px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  margin: 15px auto;
+  max-width: 300px;
+  overflow: hidden;
+}
+.score-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #64ffda, #536dfe, #e040fb);
+  border-radius: 6px;
+  transition: width 1s ease;
+}
+
+/* ============================================
+   CONFETTI
+   ============================================ */
 .confetti-container {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none; z-index: 999;
@@ -200,237 +568,634 @@ header p { font-size: 1.2em; margin-top: 10px; color: #666; }
 .confetti {
   position: absolute;
   font-size: 1.5em;
-  animation: confettiFall 1.5s forwards;
+  animation: confettiFall 1.8s forwards;
 }
 @keyframes confettiFall {
   0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-/* --- スコア --- */
-.score-section {
-  max-width: 700px;
-  margin: 30px auto;
-  padding: 30px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-.score-section h2 { color: #e91e63; font-size: 1.8em; }
-.score-num { font-size: 3em; margin: 15px 0; }
-
+/* ============================================
+   FOOTER
+   ============================================ */
 footer {
   text-align: center;
-  padding: 40px 20px;
-  color: #999;
-  font-size: 0.9em;
+  padding: 50px 20px;
+  color: #546e7a;
+  font-size: 0.85em;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 40px;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 600px) {
+  header h1 { font-size: 1.8em; }
+  .section, .maze-section, .quiz-section { padding: 22px 18px; }
+  .doping-container { gap: 20px; }
+  .doping-box { width: 160px; }
+  .crystal-grid { grid-template-columns: repeat(5, 40px); grid-template-rows: repeat(3, 40px); }
+  .atom { width: 40px; height: 40px; font-size: 0.65em; }
 }
 </style>
 </head>
 <body>
 
+<div class="bg-particles" id="bgParticles"></div>
+
+<div class="container">
 <header>
-  <h1>⚡ 半導体アドベンチャー ⚡</h1>
-  <p>半導体のふしぎな世界をたんけんしよう！</p>
+  <h1>⚡ 半導体完全ガイド ⚡</h1>
+  <p class="subtitle">子どもにもわかる、大人も納得する ── シリコンの世界への冒険</p>
 </header>
 
-<!-- セクション1 -->
-<div class="section">
-  <h2>1. 半導体ってなに？</h2>
-  <span class="emoji-icon">🔬</span>
-  <p>半導体は、電気を<strong>通したり</strong>、<strong>通さなかったり</strong>できるふしぎな物質だよ。スイッチみたいに切りかえられるんだ！</p>
-  <div class="electron-track" id="electronTrack">
-    <div class="electron on"></div>
-    <div class="electron on"></div>
-    <div class="electron on"></div>
+<!-- 目次 -->
+<nav class="toc">
+  <h3>📖 目次</h3>
+  <ol>
+    <li><a href="#sec1">半導体ってなに？── 導体と絶縁体のあいだ</a></li>
+    <li><a href="#sec2">シリコンの秘密 ── 4本の手を持つ原子</a></li>
+    <li><a href="#sec3">P型とN型の魔法 ── ドーピングの科学</a></li>
+    <li><a href="#sec4">トランジスタの正体 ── 現代の魔法の蛇口</a></li>
+    <li><a href="#sec5">どこに使われている？── 身のまわりの半導体</a></li>
+    <li><a href="#sec6">未来はどうなる？── AIとその先へ</a></li>
+    <li><a href="#maze">電子の迷路ゲーム</a></li>
+    <li><a href="#quiz">理解度チェッククイズ</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================
+     SECTION 1: 半導体とは
+     ============================================ -->
+<div class="section" id="sec1">
+  <h2><span class="num">1</span>半導体ってなに？</h2>
+  <p>物質には電気を<strong>よく通すもの（導体）</strong>と<strong>まったく通さないもの（絶縁体）</strong>がある。<br>半導体はその<strong>中間</strong>。条件しだいで電気を通したり、止めたりできる「切りかえ可能な素材」だ。</p>
+
+  <div class="diagram">
+    <div class="label">⚡ 導体 ─ 半導体 ─ 絶縁体 スペクトル</div>
+    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:80px; text-align:center; padding:12px; background:rgba(255,235,59,0.2); border-radius:8px;">
+        <div style="font-size:1.8em;">🥇</div>
+        <strong style="color:#ffeb3b;">導体</strong><br>
+        <small>銅・金・アルミ</small><br>
+        <small style="color:#aaa;">電気をよく通す</small>
+      </div>
+      <div style="font-size:1.5em; color:#546e7a;">→</div>
+      <div style="flex:1; min-width:80px; text-align:center; padding:12px; background:rgba(100,255,218,0.15); border-radius:8px; border:1px solid rgba(100,255,218,0.3);">
+        <div style="font-size:1.8em;">⚡</div>
+        <strong style="color:#64ffda;">半導体</strong><br>
+        <small>シリコン・ゲルマニウム</small><br>
+        <small style="color:#aaa;">条件で変わる！</small>
+      </div>
+      <div style="font-size:1.5em; color:#546e7a;">→</div>
+      <div style="flex:1; min-width:80px; text-align:center; padding:12px; background:rgba(255,255,255,0.05); border-radius:8px;">
+        <div style="font-size:1.8em;">🧱</div>
+        <strong style="color:#90a4ae;">絶縁体</strong><br>
+        <small>ゴム・ガラス・木</small><br>
+        <small style="color:#aaa;">電気を通さない</small>
+      </div>
+    </div>
   </div>
-  <button class="toggle-btn" onclick="toggleElectrons()">電気を ON / OFF</button>
-  <div class="quiz" id="quiz1">
-    <p>🧐 クイズ１：半導体はどんな物質？</p>
-    <button onclick="answer(1, this, true)">電気を通したり止めたりできる</button>
-    <button onclick="answer(1, this, false)">いつも電気を通す</button>
-    <button onclick="answer(1, this, false)">ぜったいに電気を通さない</button>
-    <div class="result" id="result1"></div>
-  </div>
+
+  <p>ポイントは「操作できる」こと。導体はいつでも電気を通すし、絶縁体は通さない。半導体だけが<strong>「今は通せ」「今は止まれ」</strong>と命令できる。これがコンピュータの基礎になる。</p>
 </div>
 
-<!-- セクション2 -->
-<div class="section">
-  <h2>2. なぜ必要なの？</h2>
-  <div style="text-align:center"><span class="brain">🧠</span></div>
-  <p>半導体は機械に<strong>「考える力」</strong>をあげるためのもの。コンピュータが計算したり、おぼえたりできるのは半導体のおかげだよ！</p>
-  <div class="quiz" id="quiz2">
-    <p>🧐 クイズ２：半導体は機械に何をあげる？</p>
-    <button onclick="answer(2, this, false)">おいしいごはん</button>
-    <button onclick="answer(2, this, true)">考える力</button>
-    <button onclick="answer(2, this, false)">きれいな色</button>
-    <div class="result" id="result2"></div>
+<!-- ============================================
+     SECTION 2: シリコンの秘密
+     ============================================ -->
+<div class="section" id="sec2">
+  <h2><span class="num">2</span>シリコンの秘密</h2>
+  <p>半導体に最もよく使われる元素は<strong>シリコン（Si）</strong>。地球の地殻で酸素に次いで2番目に多い元素で、砂の主成分だ。</p>
+
+  <h3>なぜシリコンが選ばれたのか？</h3>
+  <p>シリコン原子は最外殻に<strong>4つの価電子（手）</strong>を持つ。この「ちょうど4本」がカギ。隣の原子と手をつなぎ合って安定した<strong>共有結合</strong>の結晶格子を作る。</p>
+
+  <div class="diagram">
+    <div class="label">🔬 シリコン原子の価電子（4つの手）</div>
+    <div class="valence-demo">
+      <div class="valence-atom silicon-atom">
+        <span>Si</span>
+        <div class="valence-dot"></div><!-- top -->
+        <div class="valence-dot"></div><!-- bottom -->
+        <div class="valence-dot"></div><!-- left -->
+        <div class="valence-dot"></div><!-- right -->
+      </div>
+      <div style="color:#90a4ae; max-width: 260px; font-size:0.9em;">
+        シリコン原子は<strong style="color:#ffeb3b;">4つの電子（黄色の点）</strong>を持ち、隣の原子と電子を共有して結晶を作る。すべての手がふさがっているので、電気は流れにくい（＝純粋な半導体）。
+      </div>
+    </div>
   </div>
+
+  <div class="diagram">
+    <div class="label">💎 シリコン結晶格子（イメージ）</div>
+    <div class="crystal-grid">
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+      <div class="atom si">Si</div>
+    </div>
+    <p style="text-align:center; font-size:0.85em; color:#78909c; margin-top:10px;">
+      各原子が隣と電子を共有 → 結合が安定 → 純粋なシリコンは電気を通しにくい
+    </p>
+  </div>
+
+  <p>純粋なシリコンのままでは半導体として使えない。ここに<strong>不純物を混ぜる（ドーピング）</strong>ことで、自由に動ける電子や正孔を生み出す ── それが次のセクションだ。</p>
 </div>
 
-<!-- セクション3 -->
-<div class="section">
-  <h2>3. どこに使われている？</h2>
-  <div class="device-list">
-    <div class="device-item"><span class="icon">📱</span>スマホ</div>
-    <div class="device-item"><span class="icon">🎮</span>ゲーム機</div>
-    <div class="device-item"><span class="icon">🚗</span>車</div>
-    <div class="device-item"><span class="icon">💻</span>パソコン</div>
-    <div class="device-item"><span class="icon">🏥</span>医りょう機器</div>
+<!-- ============================================
+     SECTION 3: P型とN型
+     ============================================ -->
+<div class="section" id="sec3">
+  <h2><span class="num">3</span>P型とN型の魔法</h2>
+  <p>シリコンの結晶に別の元素を少しだけ混ぜる（<strong>ドーピング</strong>）と、電気的な性質が劇的に変わる。</p>
+
+  <h3>N型半導体 ── リンを混ぜる（電子が余る）</h3>
+  <p><strong>リン（P）</strong>は価電子を<strong>5つ</strong>持つ。シリコンの結晶に入ると4つは結合に使われるが、<strong>1つ余る</strong>。この余った電子が自由に動き回り、電流の担い手（<strong>キャリア</strong>）になる。「<strong>N</strong>egative（マイナス）」の電子が主役なので<strong>N型</strong>と呼ぶ。</p>
+
+  <h3>P型半導体 ── ホウ素を混ぜる（電子が不足する）</h3>
+  <p><strong>ホウ素（B）</strong>は価電子が<strong>3つ</strong>しかない。結合が1つ足りないので、そこに<strong>「穴」＝正孔（ホール）</strong>ができる。周囲の電子が穴に飛び込むと、穴が移動したように見える。「<strong>P</strong>ositive（プラス）」的に振る舞う正孔が主役なので<strong>P型</strong>。</p>
+
+  <div class="diagram">
+    <div class="label">⚛️ N型 vs P型 ── ドーピングの可視化</div>
+    <div class="doping-container">
+      <div class="doping-box n-type">
+        <div class="title">N型（リン添加）</div>
+        <div class="doping-visual">
+          <div class="doping-center">P</div>
+          <div class="orbit-electron e"></div>
+          <div class="orbit-electron e"></div>
+          <div class="orbit-electron e"></div>
+          <div class="orbit-electron e"></div>
+          <div class="orbit-electron e free"></div>
+        </div>
+        <small style="color:#81d4fa;">5つ目の電子が自由に！<br>→ 電流が流れやすい</small>
+      </div>
+      <div class="doping-box p-type">
+        <div class="title">P型（ホウ素添加）</div>
+        <div class="doping-visual">
+          <div class="doping-center">B</div>
+          <div class="orbit-electron e"></div>
+          <div class="orbit-electron e"></div>
+          <div class="orbit-electron e"></div>
+          <div class="orbit-electron hole"></div>
+        </div>
+        <small style="color:#f48fb1;">1つ足りない＝正孔<br>→ 穴が電流の代わりに</small>
+      </div>
+    </div>
   </div>
-  <p>スマホもゲーム機も車も、みんな半導体が入っているよ。半導体がないと動かないんだ！</p>
-  <div class="quiz" id="quiz3">
-    <p>🧐 クイズ３：半導体が使われていないのはどれ？</p>
-    <button onclick="answer(3, this, false)">スマートフォン</button>
-    <button onclick="answer(3, this, false)">ゲーム機</button>
-    <button onclick="answer(3, this, true)">木のイス</button>
-    <div class="result" id="result3"></div>
-  </div>
+
+  <p>N型とP型を<strong>接合</strong>させると、境界で電子と正孔が出会い、不思議な性質が生まれる。これが<strong>PN接合</strong>──ダイオードの基本原理であり、トランジスタへの入り口だ。</p>
 </div>
 
-<!-- セクション4 -->
-<div class="section">
-  <h2>4. どんな仕組み？</h2>
-  <span class="emoji-icon">🚰</span>
-  <p>半導体は<strong>蛇口（じゃぐち）</strong>みたいなもの。蛇口を開けると水が流れるように、半導体をONにすると電気が流れるよ！</p>
-  <div class="faucet-area" id="faucet" onclick="toggleFaucet()">
-    <div class="faucet-icon">🚰</div>
-    <div class="water-drops flowing" id="waterDrops">💧💧💧</div>
-    <p id="faucetLabel">タップして蛇口を開閉しよう！（今：<strong>ON</strong>）</p>
+<!-- ============================================
+     SECTION 4: トランジスタ
+     ============================================ -->
+<div class="section" id="sec4">
+  <h2><span class="num">4</span>トランジスタの正体</h2>
+  <p>トランジスタは「<strong>小さな電気で大きな電気を操るスイッチ</strong>」。蛇口にたとえると：</p>
+  <ul style="margin:10px 0 10px 20px; color:#cfd8dc;">
+    <li><strong>水道管</strong>＝ソースからドレインへの電流の通り道</li>
+    <li><strong>蛇口のハンドル</strong>＝ゲート電圧（ちょっとの電気で操作）</li>
+    <li><strong>流れる水</strong>＝大きな電流</li>
+  </ul>
+
+  <div class="diagram">
+    <div class="label">🔧 NPN トランジスタの構造</div>
+    <svg viewBox="0 0 500 200" width="100%" style="max-width:500px; display:block; margin:0 auto;">
+      <!-- N region left -->
+      <rect x="30" y="60" width="120" height="80" rx="8" fill="rgba(33,150,243,0.3)" stroke="#64b5f6" stroke-width="2"/>
+      <text x="90" y="108" text-anchor="middle" fill="#64b5f6" font-weight="bold" font-size="18">N</text>
+      <text x="90" y="128" text-anchor="middle" fill="#90a4ae" font-size="11">エミッタ</text>
+      <!-- P region -->
+      <rect x="170" y="60" width="120" height="80" rx="8" fill="rgba(233,30,99,0.25)" stroke="#f48fb1" stroke-width="2"/>
+      <text x="230" y="108" text-anchor="middle" fill="#f48fb1" font-weight="bold" font-size="18">P</text>
+      <text x="230" y="128" text-anchor="middle" fill="#90a4ae" font-size="11">ベース</text>
+      <!-- N region right -->
+      <rect x="310" y="60" width="120" height="80" rx="8" fill="rgba(33,150,243,0.3)" stroke="#64b5f6" stroke-width="2"/>
+      <text x="370" y="108" text-anchor="middle" fill="#64b5f6" font-weight="bold" font-size="18">N</text>
+      <text x="370" y="128" text-anchor="middle" fill="#90a4ae" font-size="11">コレクタ</text>
+      <!-- Arrows -->
+      <line x1="150" y1="100" x2="170" y2="100" stroke="#ffeb3b" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="290" y1="100" x2="310" y2="100" stroke="#ffeb3b" stroke-width="2" marker-end="url(#arrow)"/>
+      <!-- Gate signal -->
+      <line x1="230" y1="60" x2="230" y2="25" stroke="#e040fb" stroke-width="2"/>
+      <text x="230" y="18" text-anchor="middle" fill="#e040fb" font-size="12">ゲート信号 ↓</text>
+      <!-- Labels -->
+      <text x="90" y="160" text-anchor="middle" fill="#546e7a" font-size="10">電子の入口</text>
+      <text x="370" y="160" text-anchor="middle" fill="#546e7a" font-size="10">電子の出口</text>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="#ffeb3b"/>
+        </marker>
+      </defs>
+    </svg>
+    <p style="text-align:center; font-size:0.85em; color:#78909c; margin-top:10px;">
+      ベース（P型）に小さな信号を送ると、エミッタ→コレクタ間に大きな電流が流れる
+    </p>
   </div>
-  <div class="quiz" id="quiz4">
-    <p>🧐 クイズ４：半導体の仕組みは何にたとえられる？</p>
-    <button onclick="answer(4, this, true)">蛇口のオン・オフ</button>
-    <button onclick="answer(4, this, false)">電車のレール</button>
-    <button onclick="answer(4, this, false)">風船のふくらみ</button>
-    <div class="result" id="result4"></div>
+
+  <h3>インタラクティブ：ゲートを操作してみよう</h3>
+  <div class="transistor-interactive">
+    <p style="color:#b0bec5; margin-bottom:10px;">ゲートに電圧をかけると電流が流れ出す</p>
+    <button class="gate-btn" id="gateBtn" onclick="toggleGate()">⚡ ゲート ON / OFF</button>
+    <div class="current-path" id="currentPath">
+      <div class="current-dot" id="cd1"></div>
+      <div class="current-dot" id="cd2"></div>
+      <div class="current-dot" id="cd3"></div>
+      <div class="current-dot" id="cd4"></div>
+    </div>
+    <div class="transistor-status" id="transistorStatus">ゲート：OFF ── 電流は流れていない 🔴</div>
   </div>
+
+  <p>1つのトランジスタは単なるスイッチだが、これを<strong>数十億個</strong>集積したのが現代の<strong>CPU</strong>や<strong>メモリ</strong>だ。Apple M2チップには約<strong>200億個</strong>のトランジスタが詰まっている。</p>
 </div>
 
-<!-- セクション5 -->
-<div class="section">
-  <h2>5. 未来はどうなる？</h2>
+<!-- ============================================
+     SECTION 5: どこに使われている？
+     ============================================ -->
+<div class="section" id="sec5">
+  <h2><span class="num">5</span>どこに使われている？</h2>
+  <p>半導体は現代生活のあらゆる場所に存在する。</p>
+  <div class="app-grid">
+    <div class="app-card"><span class="icon">📱</span><span class="name">スマートフォン</span></div>
+    <div class="app-card"><span class="icon">🎮</span><span class="name">ゲーム機</span></div>
+    <div class="app-card"><span class="icon">🚗</span><span class="name">自動車</span></div>
+    <div class="app-card"><span class="icon">💻</span><span class="name">パソコン</span></div>
+    <div class="app-card"><span class="icon">🏥</span><span class="name">医療機器</span></div>
+    <div class="app-card"><span class="icon">🛰️</span><span class="name">人工衛星</span></div>
+    <div class="app-card"><span class="icon">🏠</span><span class="name">家電製品</span></div>
+    <div class="app-card"><span class="icon">⚡</span><span class="name">電力制御</span></div>
+  </div>
+  <p>最新の自動車には<strong>3,000個以上</strong>の半導体チップが使われている。2020〜2021年の世界的な半導体不足では、自動車メーカーが生産を大幅に減らすほどの影響が出た。</p>
+</div>
+
+<!-- ============================================
+     SECTION 6: 未来
+     ============================================ -->
+<div class="section" id="sec6">
+  <h2><span class="num">6</span>未来はどうなる？</h2>
   <div class="rocket-area">
     <div class="rocket" id="rocket" onclick="launchRocket()">🚀</div>
   </div>
-  <p>半導体はどんどん小さく、速くなっているよ。<strong>AI（人工ちのう）</strong>や<strong>ロボット</strong>の未来を作るのも半導体なんだ！ロケットをクリックしてみよう！</p>
-  <div class="quiz" id="quiz5">
-    <p>🧐 クイズ５：半導体の進化でできるようになることは？</p>
-    <button onclick="answer(5, this, false)">時間をもどす</button>
-    <button onclick="answer(5, this, true)">AIやロボットが発展する</button>
-    <button onclick="answer(5, this, false)">空を自由にとべる</button>
-    <div class="result" id="result5"></div>
+  <p>半導体の進化は<strong>ムーアの法則</strong>（約2年で集積度が2倍）に導かれてきた。現在の最先端は<strong>3nmプロセス</strong>。原子わずか数十個分の幅だ。</p>
+  <h3>次世代の技術</h3>
+  <ul style="margin:10px 0 10px 20px; color:#cfd8dc;">
+    <li><strong>GAA（Gate-All-Around）トランジスタ</strong> ── チャネルをゲートが完全に囲む新構造</li>
+    <li><strong>チップレット</strong> ── 小さなチップを組み合わせて高性能化</li>
+    <li><strong>量子コンピュータ</strong> ── 半導体の先にある計算パラダイム</li>
+    <li><strong>ニューロモーフィックチップ</strong> ── 脳の仕組みを模した省電力AI</li>
+  </ul>
+  <p style="color:#90a4ae; font-size:0.95em;">ロケットをクリックして、未来へ飛び立とう！</p>
+</div>
+
+<!-- ============================================
+     MAZE GAME
+     ============================================ -->
+<div class="maze-section" id="maze">
+  <h2>🎮 電子の迷路ゲーム</h2>
+  <p style="color:#b0bec5;">電子（黄色の光）を操作して、トランジスタのスイッチを<strong>ON</strong>にし、電球を光らせよう！<br>
+  <strong>矢印キー</strong>またはボタンで移動。壁にはぶつかれない。</p>
+  <canvas id="mazeCanvas" width="480" height="360"></canvas>
+  <div class="maze-dpad">
+    <div class="empty"></div>
+    <button onclick="mazeMove(0,-1)">▲</button>
+    <div class="empty"></div>
+    <button onclick="mazeMove(-1,0)">◀</button>
+    <button onclick="mazeMove(0,0)" style="font-size:0.7em;">●</button>
+    <button onclick="mazeMove(1,0)">▶</button>
+    <div class="empty"></div>
+    <button onclick="mazeMove(0,1)">▼</button>
+    <div class="empty"></div>
+  </div>
+  <div class="maze-controls">
+    <button onclick="resetMaze()">🔄 リセット</button>
+  </div>
+  <div class="maze-msg" id="mazeMsg">電子をゴール（💡）まで導こう！</div>
+</div>
+
+<!-- ============================================
+     QUIZ SECTION
+     ============================================ -->
+<div class="quiz-section" id="quiz">
+  <h2>🧪 理解度チェッククイズ</h2>
+  <p style="color:#b0bec5; margin-bottom:15px;">全6セクションの内容から出題。大人でも悩む5問に挑戦しよう。</p>
+
+  <div class="quiz-card" id="qc1">
+    <div class="q-num">Question 1 / 5</div>
+    <div class="q-text">シリコンの価電子は4つだが、もし価電子が5つだったらどうなる？</div>
+    <button onclick="quizAnswer(1,this,false)">A. 絶縁体になる</button>
+    <button onclick="quizAnswer(1,this,true)">B. N型半導体のように自由電子が生まれる</button>
+    <button onclick="quizAnswer(1,this,false)">C. 結晶構造を作れなくなる</button>
+    <button onclick="quizAnswer(1,this,false)">D. 超伝導体になる</button>
+    <div class="explanation" id="exp1">価電子5つの元素（リンなど）をシリコンに混ぜると、4つは結合に使われ、1つが自由電子となる。これがN型半導体の原理そのもの。シリコン自体が5価なら、同様に余剰電子を持つ導体的性質になる。</div>
+  </div>
+
+  <div class="quiz-card" id="qc2">
+    <div class="q-num">Question 2 / 5</div>
+    <div class="q-text">P型半導体の「正孔（ホール）」が電流を運ぶとは、物理的にはどういう現象？</div>
+    <button onclick="quizAnswer(2,this,false)">A. プラスの粒子が実際に移動する</button>
+    <button onclick="quizAnswer(2,this,false)">B. 光子がホールを通過する</button>
+    <button onclick="quizAnswer(2,this,true)">C. 周囲の電子が次々と空席を埋め、空席自体が移動して見える</button>
+    <button onclick="quizAnswer(2,this,false)">D. イオンが結晶中を拡散する</button>
+    <div class="explanation" id="exp2">正孔は実体のある粒子ではない。電子が隣の空席に移動すると、空席の位置が逆方向に動く。この「空席の見かけの移動」がプラスの電荷の流れとして振る舞う。映画館で席をずれる人と空席の関係に似ている。</div>
+  </div>
+
+  <div class="quiz-card" id="qc3">
+    <div class="q-num">Question 3 / 5</div>
+    <div class="q-text">MOSFET（現代の主流トランジスタ）で「ゲート酸化膜」の役割は？</div>
+    <button onclick="quizAnswer(3,this,false)">A. 電流を増幅する</button>
+    <button onclick="quizAnswer(3,this,false)">B. 熱を逃がすヒートシンク</button>
+    <button onclick="quizAnswer(3,this,true)">C. ゲートとチャネルを絶縁し、電界だけでチャネルを制御する</button>
+    <button onclick="quizAnswer(3,this,false)">D. 光を吸収してエネルギーに変える</button>
+    <div class="explanation" id="exp3">MOSFETのゲート酸化膜（SiO₂など）は、ゲート電極とチャネルを電気的に絶縁する。ゲートに電圧をかけると電界がチャネルに作用し、キャリアを引き寄せて導通させる。電流を流さずに電界だけで制御できるため、消費電力が極めて小さい。</div>
+  </div>
+
+  <div class="quiz-card" id="qc4">
+    <div class="q-num">Question 4 / 5</div>
+    <div class="q-text">半導体の微細化で「3nm」と言われるとき、この数値は実際に何を意味する？</div>
+    <button onclick="quizAnswer(4,this,false)">A. トランジスタの物理的なゲート長そのもの</button>
+    <button onclick="quizAnswer(4,this,true)">B. プロセスノードの世代名であり、実際の物理寸法とは直接対応しない</button>
+    <button onclick="quizAnswer(4,this,false)">C. 配線の太さ</button>
+    <button onclick="quizAnswer(4,this,false)">D. シリコンウェーハの厚さ</button>
+    <div class="explanation" id="exp4">現代の「3nm」「5nm」はマーケティング上の世代名。実際のゲート長やフィン幅はこの数字と一致しない。かつてはゲート長と対応していたが、FinFETやGAA世代では、トランジスタ密度や性能の世代指標として使われている。</div>
+  </div>
+
+  <div class="quiz-card" id="qc5">
+    <div class="q-num">Question 5 / 5</div>
+    <div class="q-text">PN接合に逆バイアスをかけたとき、空乏層はどう変化する？</div>
+    <button onclick="quizAnswer(5,this,false)">A. 空乏層が狭くなり電流が流れる</button>
+    <button onclick="quizAnswer(5,this,true)">B. 空乏層が広がり電流がほぼ流れなくなる</button>
+    <button onclick="quizAnswer(5,this,false)">C. 空乏層が消滅する</button>
+    <button onclick="quizAnswer(5,this,false)">D. 空乏層の幅は変わらない</button>
+    <div class="explanation" id="exp5">逆バイアス（P側にマイナス、N側にプラス）をかけると、キャリアが接合面から引き離され、空乏層が広がる。キャリアがいない領域が広くなるため電流はほぼ流れない。これがダイオードの整流作用の基本であり、ツェナーダイオードや光検出器にも応用される。</div>
   </div>
 </div>
 
-<!-- スコア表示 -->
-<div class="score-section" id="scoreSection" style="display:none;">
-  <h2>🎉 けっか発表！</h2>
+<!-- SCORE -->
+<div class="score-section" id="scoreSection">
+  <h2>📊 クイズ結果</h2>
   <div class="score-num" id="scoreNum"></div>
-  <p id="scoreMsg"></p>
+  <div class="score-bar"><div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div></div>
+  <p id="scoreMsg" style="color:#b0bec5; margin-top:10px;"></p>
 </div>
 
 <footer>
-  <p>半導体アドベンチャー &copy; 2026 — 子どもたちに半導体のふしぎを届けよう</p>
+  <p>半導体完全ガイド &copy; 2026 ── すべての人に半導体の世界を</p>
 </footer>
+</div><!-- /container -->
 
 <div class="confetti-container" id="confettiContainer"></div>
 
 <script>
-let electronsOn = true;
-let faucetOn = true;
-let score = 0;
-let answered = [false, false, false, false, false];
+/* ============================================
+   BACKGROUND PARTICLES
+   ============================================ */
+(function(){
+  const c = document.getElementById('bgParticles');
+  for(let i = 0; i < 30; i++){
+    const d = document.createElement('div');
+    d.className = 'p';
+    d.style.left = Math.random()*100+'%';
+    d.style.animationDelay = Math.random()*15+'s';
+    d.style.animationDuration = (12+Math.random()*10)+'s';
+    c.appendChild(d);
+  }
+})();
 
-function toggleElectrons() {
-  electronsOn = !electronsOn;
-  document.querySelectorAll('.electron').forEach(el => {
-    el.className = electronsOn ? 'electron on' : 'electron off';
-    if (!electronsOn) el.style.left = '50%';
+/* ============================================
+   TRANSISTOR GATE TOGGLE
+   ============================================ */
+let gateOn = false;
+function toggleGate(){
+  gateOn = !gateOn;
+  const btn = document.getElementById('gateBtn');
+  const status = document.getElementById('transistorStatus');
+  btn.classList.toggle('active', gateOn);
+  document.querySelectorAll('.current-dot').forEach(d => {
+    d.classList.toggle('flowing', gateOn);
   });
+  status.textContent = gateOn
+    ? 'ゲート：ON ── 電流が流れている！ 🟢'
+    : 'ゲート：OFF ── 電流は流れていない 🔴';
 }
 
-function toggleFaucet() {
-  faucetOn = !faucetOn;
-  const drops = document.getElementById('waterDrops');
-  const label = document.getElementById('faucetLabel');
-  drops.className = faucetOn ? 'water-drops flowing' : 'water-drops stopped';
-  label.innerHTML = faucetOn
-    ? 'タップして蛇口を開閉しよう！（今：<strong>ON</strong>）'
-    : 'タップして蛇口を開閉しよう！（今：<strong>OFF</strong>）';
-}
-
-function launchRocket() {
+/* ============================================
+   ROCKET
+   ============================================ */
+function launchRocket(){
   const r = document.getElementById('rocket');
   r.classList.remove('launch');
   void r.offsetWidth;
   r.classList.add('launch');
-  setTimeout(() => r.classList.remove('launch'), 2200);
+  setTimeout(()=> r.classList.remove('launch'), 2200);
 }
 
-function answer(q, btn, correct) {
-  if (answered[q - 1]) return;
-  answered[q - 1] = true;
-  const result = document.getElementById('result' + q);
-  const buttons = btn.parentElement.querySelectorAll('button');
-  buttons.forEach(b => {
-    b.onclick = null;
-    if (b === btn) b.classList.add(correct ? 'correct' : 'wrong');
-  });
-  // highlight correct answer if wrong
-  if (!correct) {
-    buttons.forEach(b => {
-      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes('true')) {
-        // already removed onclick, mark correct via data
-      }
-    });
-    // find correct button
-    const allBtns = document.querySelectorAll('#quiz' + q + ' button');
-    allBtns.forEach(b => {
-      if (b.dataset.correct === undefined) return;
-    });
-  }
-  if (correct) {
-    score++;
-    result.textContent = '🎉 せいかい！すごい！';
-    showConfetti();
-  } else {
-    result.textContent = '😢 ざんねん！でもおぼえておこう！';
-  }
-  // Check if all answered
-  if (answered.every(a => a)) showScore();
-}
-
-function showConfetti() {
+/* ============================================
+   CONFETTI
+   ============================================ */
+function showConfetti(){
   const container = document.getElementById('confettiContainer');
-  const emojis = ['🎉', '⭐', '✨', '🌟', '💫', '🎊'];
-  for (let i = 0; i < 20; i++) {
+  const emojis = ['🎉','⭐','✨','🌟','💫','🎊'];
+  for(let i=0;i<25;i++){
     const c = document.createElement('div');
-    c.className = 'confetti';
-    c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    c.style.left = Math.random() * 100 + '%';
-    c.style.animationDelay = Math.random() * 0.5 + 's';
+    c.className='confetti';
+    c.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    c.style.left=Math.random()*100+'%';
+    c.style.animationDelay=Math.random()*0.6+'s';
     container.appendChild(c);
   }
-  setTimeout(() => { container.innerHTML = ''; }, 2000);
+  setTimeout(()=>{container.innerHTML='';},2500);
 }
 
-function showScore() {
-  const s = document.getElementById('scoreSection');
-  s.style.display = '';
-  document.getElementById('scoreNum').textContent = score + ' / 5';
-  const msgs = [
-    'もっとたんけんしてみよう！',
-    'いいスタートだね！',
-    'がんばったね！',
-    'すごいぞ！',
-    'とてもよくできました！',
-    '🏆 パーフェクト！半導体はかせだ！'
-  ];
-  document.getElementById('scoreMsg').textContent = msgs[score];
-  s.scrollIntoView({ behavior: 'smooth' });
+/* ============================================
+   QUIZ
+   ============================================ */
+let quizScore = 0;
+let quizAnswered = [false,false,false,false,false];
+
+function quizAnswer(q, btn, correct){
+  if(quizAnswered[q-1]) return;
+  quizAnswered[q-1] = true;
+
+  const card = document.getElementById('qc'+q);
+  const buttons = card.querySelectorAll('button');
+  buttons.forEach((b,i) => {
+    b.style.pointerEvents = 'none';
+  });
+
+  if(correct){
+    btn.classList.add('correct');
+    quizScore++;
+    showConfetti();
+  } else {
+    btn.classList.add('wrong');
+    // reveal correct
+    buttons.forEach(b => {
+      // find the correct one by checking the onclick attribute backup
+      // We use a different approach: mark correct in data
+    });
+    // Hardcode correct indices: q1=1, q2=2, q3=2, q4=1, q5=1 (0-indexed)
+    const correctIdx = [1,2,2,1,1];
+    buttons[correctIdx[q-1]].classList.add('reveal-correct');
+  }
+
+  const exp = document.getElementById('exp'+q);
+  exp.classList.add('show');
+
+  if(quizAnswered.every(a=>a)) showQuizScore();
 }
+
+function showQuizScore(){
+  const s = document.getElementById('scoreSection');
+  s.style.display = 'block';
+  document.getElementById('scoreNum').textContent = quizScore + ' / 5';
+  document.getElementById('scoreBarFill').style.width = (quizScore/5*100)+'%';
+  const msgs = [
+    'まだまだ！もう一度解説を読んでみよう。',
+    'もう少し！基礎セクションを復習してみよう。',
+    'なかなか！半導体の基礎は掴んでいる。',
+    'すばらしい！かなり深く理解している。',
+    'お見事！完璧な半導体マスターだ。',
+    '🏆 パーフェクト！半導体エンジニアレベル！'
+  ];
+  document.getElementById('scoreMsg').textContent = msgs[quizScore];
+  s.scrollIntoView({behavior:'smooth'});
+}
+
+/* ============================================
+   MAZE GAME
+   ============================================ */
+const canvas = document.getElementById('mazeCanvas');
+const ctx = canvas.getContext('2d');
+const CELL = 40;
+const COLS = 12;
+const ROWS = 9;
+canvas.width = COLS * CELL;
+canvas.height = ROWS * CELL;
+
+// 0=path, 1=wall, 2=switch(transistor), 3=goal(bulb)
+const mazeMap = [
+  [1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,1,0,0,0,1,0,0,0,1],
+  [1,0,1,1,0,1,0,1,0,1,0,1],
+  [1,0,0,0,0,1,0,0,0,1,0,1],
+  [1,1,1,0,1,1,1,1,0,1,0,1],
+  [1,0,0,0,0,0,2,0,0,1,0,1],
+  [1,0,1,1,1,1,1,1,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,1,3,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1],
+];
+
+let playerX = 1, playerY = 1;
+let switchOn = false;
+let mazeWon = false;
+
+function drawMaze(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const x=c*CELL, y=r*CELL;
+      if(mazeMap[r][c]===1){
+        ctx.fillStyle='#1a1a3e';
+        ctx.fillRect(x,y,CELL,CELL);
+        ctx.strokeStyle='#2a2a5e';
+        ctx.strokeRect(x,y,CELL,CELL);
+      } else {
+        ctx.fillStyle='#0a0a1a';
+        ctx.fillRect(x,y,CELL,CELL);
+      }
+      if(mazeMap[r][c]===2){
+        ctx.font='22px sans-serif';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(switchOn?'🟢':'🔴', x+CELL/2, y+CELL/2);
+      }
+      if(mazeMap[r][c]===3){
+        ctx.font='22px sans-serif';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(switchOn?'💡':'🔒', x+CELL/2, y+CELL/2);
+      }
+    }
+  }
+
+  // Player (electron)
+  const px = playerX*CELL+CELL/2, py = playerY*CELL+CELL/2;
+  ctx.beginPath();
+  ctx.arc(px, py, 12, 0, Math.PI*2);
+  ctx.fillStyle='#ffeb3b';
+  ctx.shadowColor='#ffeb3b';
+  ctx.shadowBlur=15;
+  ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.font='10px sans-serif';
+  ctx.fillStyle='#333';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText('e⁻', px, py);
+}
+
+function mazeMove(dx, dy){
+  if(mazeWon) return;
+  const nx=playerX+dx, ny=playerY+dy;
+  if(nx<0||ny<0||nx>=COLS||ny>=ROWS) return;
+  if(mazeMap[ny][nx]===1) return;
+  if(mazeMap[ny][nx]===3 && !switchOn){
+    document.getElementById('mazeMsg').textContent='🔒 まずスイッチ（トランジスタ）をONにしよう！';
+    return;
+  }
+  playerX=nx; playerY=ny;
+  if(mazeMap[ny][nx]===2 && !switchOn){
+    switchOn=true;
+    document.getElementById('mazeMsg').textContent='⚡ スイッチON！ 電球（💡）を目指そう！';
+  }
+  if(mazeMap[ny][nx]===3 && switchOn){
+    mazeWon=true;
+    document.getElementById('mazeMsg').textContent='🎉 クリア！ 電子がトランジスタを通って電球を光らせた！';
+    showConfetti();
+  }
+  drawMaze();
+}
+
+function resetMaze(){
+  playerX=1; playerY=1; switchOn=false; mazeWon=false;
+  document.getElementById('mazeMsg').textContent='電子をゴール（💡）まで導こう！';
+  drawMaze();
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowUp') mazeMove(0,-1);
+  else if(e.key==='ArrowDown') mazeMove(0,1);
+  else if(e.key==='ArrowLeft') mazeMove(-1,0);
+  else if(e.key==='ArrowRight') mazeMove(1,0);
+});
+
+drawMaze();
 </script>
 </body>
 </html>
